@@ -26,9 +26,20 @@ public class MessageResource {
    private MessageService messageService = new MessageService();	
 	
 	@GET
-	@Produces(MediaType.APPLICATION_XML)
+	@Produces(MediaType.APPLICATION_JSON)
 	public List<Message> getMessages(){
-     return messageService.getAllMessages();	
+		
+		List<Message> lista = null;
+      try {
+		
+    	  lista = messageService.getAllMessages();
+		
+	   } catch (Exception e) {
+		
+		   e.printStackTrace();
+	   }	
+      
+      return lista;
 	}
 	
 	
@@ -38,7 +49,14 @@ public class MessageResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Message addMessage(Message message){
 		
-		return messageService.addMessage(message);	
+		Message newMessage = null;
+		try {
+			newMessage= messageService.addMessage(message);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}	
+		
+		return newMessage;
 	}
 	
 	
@@ -48,15 +66,16 @@ public class MessageResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Message updateMessage(@PathParam("messageId")String id, Message message){
 		
+		Message newMessage = null;
 		try{
 			Long mjsID = Long.parseLong(id);
 			message.setId(mjsID);
-			return messageService.updateMessage(message);
+			newMessage = messageService.updateMessage(message);
 			
-		}catch(NumberFormatException e){
+		}catch(Exception e){
 			
 		}
-		return null;
+		return newMessage;
 	}
 	
 	
@@ -68,9 +87,9 @@ public class MessageResource {
 		
 		try{
 			
-		  messageService.removeMessage(Long.parseLong(id));
+		   messageService.removeMessage(Integer.parseInt(id));
 			
-		}catch(NumberFormatException e){
+		}catch(Exception e){
 			
 		}
 		
@@ -89,20 +108,9 @@ public class MessageResource {
 		
 		try{
 			
+		      message = messageService.getMessage(Integer.parseInt(messageId));
 			
-		 message = messageService.getMessage(Long.parseLong(messageId));
-			
-		}catch(ContentNotFoundException e){
-			
-			Message ms = new Message();
-			ms.setMessage(e.getError());
-			return ms;
-		}catch(NumberFormatException ex){
-			Message ms = new Message();
-			
-			ms.setMessage("The Request Resources does not exist: " +ex.getMessage());
-			return ms;
-		}
+		}catch(Exception e){}
 	
 		return message;
 	}

@@ -1,62 +1,38 @@
 package org.maquendi.TheBrain.services;
 
-import org.maquendi.TheBrain.Database.DatabaseClass;
-import org.maquendi.TheBrain.custom.Exceptions.ContentNotFoundException;
+import org.maquendi.TheBrain.Dao.MessageDao;
 import org.maquendi.TheBrain.model.Message;
-
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 
 
 public class MessageService {
 	
-	private HashMap<Long,Message> messages = DatabaseClass.getMessageMap();
+
+	private MessageDao messagedao = new MessageDao();
 	
-	public MessageService(){
+	
+	//Long id, String message, Date created, String author
+	
+	public List<Message> getAllMessages() throws Exception{
 		
-		messages.put(1L,new Message(1L,"Hello World",new Date(),"Maquendi B."));
-		messages.put(2L,new Message(2L,"Hey Mundo",new Date(),"Maquendi B."));
+	   return messagedao.findAll();
+	}
+	
+	public Message getMessage(int id) throws Exception{
+		return messagedao.getMessage(id);
+	}
+	
+	public Message removeMessage(int id) throws Exception{
+		return messagedao.remove(id);
 	}
 	
 	
-	
-	public List<Message> getAllMessages(){
-	   
-		return new ArrayList<>(messages.values());
-	
-	}
-	
-	public Message getMessage(Long id) throws ContentNotFoundException{
-		
-		if(messages.get(id) != null){
-			return messages.get(id);
-		}else
-			throw new ContentNotFoundException("El Mensaje Solicitado No Existe !!..");
-		
-	}
-	
-	public Message removeMessage(Long id){
-		return messages.remove(id);
-	}
-	
-	
-	public Message updateMessage(Message mensaje){
-		
-		if(messages.containsKey(mensaje.getId())){
-			messages.put(mensaje.getId(),mensaje);
-			return mensaje;
-		}
-		return null;
+	public Message updateMessage(Message message) throws Exception{
+		return messagedao.updateMessage(message);
 	}
    
-	public Message addMessage(Message msj){
-		
-		msj.setId(messages.size()+1L);
-		messages.put(msj.getId(),msj);
-		
-		return msj;
+	public Message addMessage(Message message) throws Exception{
+		return messagedao.save_message(message);	
 	}
 
 }

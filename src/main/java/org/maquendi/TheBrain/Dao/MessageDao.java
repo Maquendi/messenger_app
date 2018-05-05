@@ -51,7 +51,7 @@ public class MessageDao{
 			conexion.rollback();
 			throw e;
 		}finally{
-			conn.cerrar();
+			conn.disconect();
 		}
        
 		return getMessage(messageId);
@@ -83,7 +83,7 @@ public class MessageDao{
 		   }catch(SQLException e){
 			throw e;
 		}finally{
-			conn.cerrar();
+			conn.disconect();
 		}
 
 		return newMessage;
@@ -104,8 +104,7 @@ public class MessageDao{
 			
 			
 			while(rs.next()){
-				m = new Message();
-				
+				m = new Message();		
 				m.setId((long)rs.getInt("messageId"));
 				m.setMessage(rs.getString("message"));
 				m.setAuthor(rs.getString("author"));
@@ -116,7 +115,7 @@ public class MessageDao{
 			  }catch(Exception e){
 			      throw e;
 		    }finally{
-			    conn.cerrar();
+			    conn.disconect();
 		}
 
 		return lista;
@@ -144,7 +143,7 @@ public class MessageDao{
 		}catch(Exception e){
 			throw e;
 		}finally{
-			conn.cerrar();
+			conn.disconect();
 		}
 		return message;
 	}
@@ -166,7 +165,7 @@ public class MessageDao{
 		}catch(Exception e){
 			throw e;
 		}finally{
-			conn.cerrar();
+			conn.disconect();
 		}
 		
 		return message;

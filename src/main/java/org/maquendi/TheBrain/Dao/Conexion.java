@@ -21,24 +21,23 @@ public class Conexion {
 	
 	
 	public Connection connect(){
-		
-		
+
 	try {
 			String url = "jdbc:mysql://localhost:3306/messenger";
-			
-			
+	
 			if(conn == null || conn.isClosed()){
-			    conn = DriverManager.getConnection(url,"root","Summer01");
+			   conn = DriverManager.getConnection(url,"root","Summer01");
 			}
 			
-		} catch (SQLException e) {
-			e.printStackTrace();
+		   } catch (SQLException e) {
+			  e.printStackTrace();
 		}
+	
 		return conn;
 	}
 	
 	
-	public void cerrar()
+	public void disconect()
 	{
 		try {
 			if(!conn.isClosed()){

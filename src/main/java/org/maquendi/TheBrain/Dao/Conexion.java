@@ -25,7 +25,11 @@ public class Conexion {
 		
 	try {
 			String url = "jdbc:mysql://localhost:3306/messenger";
-			conn = DriverManager.getConnection(url,"root","Summer01");
+			
+			
+			if(conn == null || conn.isClosed()){
+			    conn = DriverManager.getConnection(url,"root","Summer01");
+			}
 			
 		} catch (SQLException e) {
 			e.printStackTrace();

@@ -1,6 +1,7 @@
 package org.maquendi.TheBrain.Dao;
 
 
+import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -24,14 +25,16 @@ public class MessageDao{
 		PreparedStatement pst = null;
 		String sql = "INSERT INTO message(message,date_created,author) VALUES(?,?,?)";
 		Message mess = null;
+		Connection conexion = null;
+		int messageId =0;
 		
 	   
 		try{
 			
-			
-			conn.connect().setAutoCommit(false); //starts transaction here...
+			conexion = conn.connect();
+			conexion.setAutoCommit(false); //starts transaction here...
 	
-			pst =  (PreparedStatement) conn.connect().prepareStatement(sql,Statement.RETURN_GENERATED_KEYS);	
+			pst =  (PreparedStatement) conexion.prepareStatement(sql,Statement.RETURN_GENERATED_KEYS);	
 			pst.setString(1,message.getMessage());
 			pst.setDate(2,message.getCreated());
 			pst.setString(3,message.getAuthor());
@@ -39,20 +42,19 @@ public class MessageDao{
 			ResultSet rs = pst.getGeneratedKeys();
 			
 			if(rs.next()){
-				int messageId = rs.getInt(1);
-				mess = getMessage(messageId);
+			    messageId = rs.getInt(1);
 			}
 			
-			conn.connect().commit();
+			conexion.commit();
 
 		}catch(SQLException e){
-			conn.connect().rollback();
+			conexion.rollback();
 			throw e;
 		}finally{
 			conn.cerrar();
 		}
        
-		return mess;
+		return getMessage(messageId);
 	}
 	
 	
@@ -62,13 +64,13 @@ public class MessageDao{
 		
 		String query = "SELECT * FROM message WHERE messageId = ?";
 		Message newMessage = null;
-		PreparedStatement pst = null;
 		
 		try{
-			
-			pst = (PreparedStatement) conn.connect().prepareStatement(query);
+			Connection conexion = conn.connect();
+			PreparedStatement pst = (PreparedStatement) conexion.prepareStatement(query);
 			pst.setInt(1,messageId);
 			ResultSet rs = pst.executeQuery();
+			
 			
 			if(rs.next()){
 				newMessage = new Message();
@@ -96,8 +98,8 @@ public class MessageDao{
 		Message m = null;
 		//Long id, String message, Date created, String author
 		try{
-			
-			pst = (PreparedStatement) conn.connect().prepareStatement(query);
+			Connection conexion = conn.connect();
+			pst = (PreparedStatement) conexion.prepareStatement(query);
 			ResultSet rs = pst.executeQuery();
 			
 			
@@ -127,25 +129,23 @@ public class MessageDao{
 		
 		String sql = "DELETE FROM message WHERE messageId = ?";
 		Message message = null;
-		
+		Connection conexion = null;
 		
 		try{
-
-			message = this.getMessage(messageId);
 			
-			if(message != null){
-				PreparedStatement pst = (PreparedStatement)conn.connect().prepareStatement(sql);
+			message = this.getMessage(messageId);
+             if(message != null){
+				conexion = conn.connect();
+				PreparedStatement pst = (PreparedStatement)conexion.prepareStatement(sql);
 				pst.setLong(1,messageId);
 				pst.executeUpdate();
 			}
-			
-			
+
 		}catch(Exception e){
 			throw e;
 		}finally{
 			conn.cerrar();
 		}
-	 
 		return message;
 	}
 	
@@ -156,7 +156,8 @@ public class MessageDao{
 		String query = "UPDATE message m SET m.message = ? WHERE m.messageId = ?";
 		
 		try{
-			PreparedStatement pst=(PreparedStatement)conn.connect().prepareStatement(query);
+			Connection conexion = conn.connect();
+			PreparedStatement pst=(PreparedStatement)conexion.prepareStatement(query);
 			pst.setString(1,message.getMessage());
 			pst.setLong(2,message.getId());
 			pst.executeUpdate();

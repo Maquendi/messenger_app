@@ -51,7 +51,14 @@ public class MessageResource {
 		
 		Message newMessage = null;
 		try {
+			
 			newMessage= messageService.addMessage(message);
+			
+			if(newMessage == null){
+				newMessage = new Message();
+				newMessage.setMessage("Ocurrio un error. devolvio nulo");
+			}
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}	
@@ -82,17 +89,14 @@ public class MessageResource {
 	@DELETE
 	@Path("/{messageId}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public void delete(@PathParam("messageId") String id){
-		
-		
+	public Message delete(@PathParam("messageId") String id){
+		Message message = null;
 		try{
-			
-		   messageService.removeMessage(Integer.parseInt(id));
-			
+			message = messageService.removeMessage(Integer.parseInt(id));
 		}catch(Exception e){
 			
 		}
-		
+		return message;
 	}
 	
 	

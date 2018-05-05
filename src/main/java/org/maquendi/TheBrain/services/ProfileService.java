@@ -1,53 +1,36 @@
 package org.maquendi.TheBrain.services;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import org.maquendi.TheBrain.Database.DatabaseClass;
+import org.maquendi.TheBrain.Dao.ProfileDao;
 import org.maquendi.TheBrain.model.Profile;
 
 
 public class ProfileService {
 
-	private HashMap<String,Profile> profiles = DatabaseClass.getProfileMap();
+	private ProfileDao profile = new ProfileDao();
 	
+	public List<Profile> finAll() throws Exception{
+		return profile.findAll();
+	}
 	
-	public ProfileService(){
-		profiles.put("Maq", new Profile(1L,"Maq","Maquendi","Beltran Novas"));
-		profiles.put("ros", new Profile(2L,"ros","Rosaura","Taveras Veloz"));
+	public Profile getProfile(String profileName) throws Exception{
+		return profile.getProfile(profileName);		
+	}
+	
+	public Profile addProfile(Profile prof) throws Exception{
+		return profile.addProfile(prof);
 	}
 	
 	
-	public List<Profile> getAllProfiles(){
-		
-		return new ArrayList<>(profiles.values());
+	public Profile updateProf(String prof_name,Profile prof) throws Exception{
+		return profile.update(prof_name,prof);
 	}
 	
-	public Profile getProfile(String profileName){
+	public Profile removeProf(String prof) throws Exception{
 		
-		return profiles.get(profileName);		
-	}
-	
-	public Profile addProfile(Profile prof){
-		
-		prof.setId(profiles.size() + 1L);
-		profiles.put(prof.getProfileName(), prof);
-		return prof;
-		
-	}
-	
-	public Profile updateProf(Profile prof){
-		
-		if(prof.getProfileName().isEmpty()){
-			return null;
-		}
-		return profiles.put(prof.getProfileName(),prof);
-	}
-	
-	public void removeProf(Profile prof){
-		
-		profiles.remove(prof.getProfileName());
+        return profile.deleteProf(prof);	
 	}
 	
 }
